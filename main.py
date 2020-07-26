@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 pygame.init()
 
@@ -142,6 +143,9 @@ while running:
     if collision:
         my = HEIGHT - psize
         mstate = 'ready'
+        ey = 0
+        ex = random.randint(0. WIDTH - esize)
+        # สุ่มตำแหน่ง ความกว้างหน้าจอ - ขนาด virus
 
     pygame.display.update()
     screen.fill((0, 0, 0))
