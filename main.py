@@ -5,7 +5,9 @@ pygame.init()
 """
 Setting
 """
-screen = pygame.display.set_mode((800, 600))
+WIDTH = 800
+HEIGHT = 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Uncle cs Covid-19')
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
@@ -14,11 +16,12 @@ pygame.display.set_icon(icon)
 UNCLE
 """
 # 1 - player - uncle.png
-pisize = 128
+
+psize = 128
 
 pimg = pygame.image.load('uncle.png')
 px = 100  # start X
-py = 600 - pisize  # start Y
+py = HEIGHT - psize  # start Y
 pxchange = 1
 
 def player(x, y):
@@ -26,17 +29,20 @@ def player(x, y):
 
 
 """
-UNCLE
+ENEMY
 """
 
 """
-UNCLE
+MASK
 """
 
+"""
+GAME LOOP
+"""
 running = True
 
 clock = pygame.time.Clock()
-FPS = 30
+FPS = 60
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -46,7 +52,7 @@ while running:
     if px <= 0:
         pxchange = 1
         px += pxchange
-    elif px >= 600:
+    elif px >= WIDTH - psize:
         pxchange = -1
         px += pxchange
     else:
