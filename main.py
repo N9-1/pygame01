@@ -70,14 +70,15 @@ COLLISION
 """
 
 
-def is_conllision(ecx, ecy, mcx, mcy):\
-    #เช็คการชน
-    distance = math.sqrt(math.pow(ecx - mcx, 2)+math.pow(ecy - mcy, 2))
+def is_conllision(ecx, ecy, mcx, mcy):
+    # เช็คการชน
+    distance = math.sqrt(math.pow(ecx - mcx, 2) + math.pow(ecy - mcy, 2))
     print(distance)
     if distance < 48:
         return True
     else:
-        return  False
+        return False
+
 
 """
 GAME LOOP
@@ -100,9 +101,8 @@ while running:
 
             if event.key == pygame.K_SPACE:
                 if mstate == 'ready':
-                    mx = px + 100 # ขยับไปทีมือ
+                    mx = px + 100  # ขยับไปทีมือ
                     fire_mask(mx, my)
-
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -133,12 +133,16 @@ while running:
     if mstate == 'fire':
         fire_mask(mx, my)
         my = my - mychange
-
+    # เช็คว่าชนยัง
     if my <= 0:
+        my = HEIGHT - psize
+        mstate = 'ready'
+    # เช็คว่าชนหรือไม่
+    collision = is_conllision(ex, ey, mx, my)
+    if collision:
         my = HEIGHT - psize
         mstate = 'ready'
 
     pygame.display.update()
-    screen.fill((0,0,0))
+    screen.fill((0, 0, 0))
     clock.tick(FPS)
-
