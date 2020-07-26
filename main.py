@@ -115,10 +115,22 @@ pygame.mixer.music.play(-1)
 
 firesound = pygame.mixer.Sound('whoosh.ogg')
 esound = pygame.mixer.Sound('roblox_death_sound_effect.ogg')
+gameoversound = pygame.mixer.Sound('Wasted_-Busted_-Mission-Failed-Sound-effects-with-text.ogg')
 """
 GAME OVER
 """
-fontover = pygame
+fontover = pygame.font.Font('angsana.ttc', 80)
+fontnew = pygame.font.Font('angsana.ttc', 20)
+playsound = False
+gameover = False
+def game_over():
+    global playsound
+    global gameover
+    if playsound == False:
+        gameoversound.play()
+        playsound = True
+    if gameover == False:
+        gameover = True
 
 """
 GAME LOOP
@@ -145,10 +157,19 @@ while running:
                     firesound.play()
                     mx = px + 100  # ขยับไปทีมือ
                     fire_mask(mx, my)
+            if event.key == pygame.K_n:
+                gameover = False
+                playsound = False
+                allscore = 0
+                pygame.mixer.music.play(-1)
+                for i in range(allenemy):
+                    eylist[i] = random.randint(0, 100)
+                    exlist[i] = random.randint(50, WIDTH - psize)
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 pxchange = 0
+
     """
     RUN PLAYER 
     """
@@ -180,6 +201,18 @@ while running:
     """
     for i in range(allenemy):
         # เพิ่ม enemy speed
+        if eylist[i] > HEIGHT - esize and gameover == False:
+            for i in range(allenemy):
+                eylist[i] = 1000
+            game_over()
+            pygame.mixer.music.stop()
+            break
+        if gameover == True:
+            overtext = fontover.render('GAME OVER', True, (255, 0, 0))
+            screen.blit(overtext, (300, 300))
+            overtext2 = fontnew.render('pass [N] new game', True, (255, 255, 255))
+            screen.blit(overtext2, (350, 400))
+
         eylist[i] += ey_change_list[i]
         collisionmulit = is_conllision(exlist[i], eylist[i], mx, my)
         if collisionmulit:
@@ -189,16 +222,16 @@ while running:
             exlist[i] = random.randint(50, WIDTH - esize)
             allscore += 1
             ey_change_list[i] += 1
-
             esound.play()
 
         enemy(exlist[i], eylist[i])
 
         # ชนพื้น
+        '''
         if eylist[i] == HEIGHT:
             eylist[i] = 0
             exlist[i] = random.randint(50, WIDTH - esize)
-
+        '''
     """
     FIRE MASK
     """
