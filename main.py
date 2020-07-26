@@ -42,13 +42,26 @@ esize = 64
 eimg = pygame.image.load('virus.png')
 ex = 50
 ey = 0
-eychange = 5
+eychange = 1
 
 
 def enemy(x, y):
     screen.blit(eimg, (x, y))
 
 
+"""
+MULTI-ENEMY
+"""
+exlist = []
+eylist = []
+ey_change_list = []  # enemy speed
+allenemy = 5
+
+for i in range(allenemy):
+    exlist.append(random.randint(50, WIDTH - esize))
+    eylist.append(random.randint(0, 100))
+    #ey_change_list.append(random.randint(1, 2))  # สุ่มความเร็ว enemy
+    ey_change_list.append(1)
 """
 MASK
 """
@@ -83,6 +96,31 @@ def is_conllision(ecx, ecy, mcx, mcy):
 
 
 """
+SCORE
+"""
+allscore = 0
+font = pygame.font.Font('angsana.ttc', 50)
+
+
+def showscore():
+    score = font.render(f'คะแนน: {allscore} คะแนน', True, (255, 255, 255))
+    screen.blit(score, (30, 30))
+
+"""
+SOUND
+"""
+pygame.mixer.music.load('oldvideogame.wav')
+pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.play(-1)
+
+firesound = pygame.mixer.Sound('whoosh.ogg')
+esound = pygame.mixer.Sound('roblox_death_sound_effect.ogg')
+"""
+GAME OVER
+"""
+fontover = pygame
+
+"""
 GAME LOOP
 """
 running = True
@@ -104,6 +142,7 @@ while running:
 
             if event.key == pygame.K_SPACE:
                 if mstate == 'ready':
+                    firesound.play()
                     mx = px + 100  # ขยับไปทีมือ
                     fire_mask(mx, my)
 
@@ -127,12 +166,38 @@ while running:
     """
     RUN ENEMY
     """
+    '''
     enemy(ex, ey)
     ey += eychange
     # ชนพื้น
     if ey == HEIGHT:
         ey = 0
         ex = random.randint(50, WIDTH - esize)
+    '''
+
+    """
+    RUN MULTI ENEMY
+    """
+    for i in range(allenemy):
+        # เพิ่ม enemy speed
+        eylist[i] += ey_change_list[i]
+        collisionmulit = is_conllision(exlist[i], eylist[i], mx, my)
+        if collisionmulit:
+            my = HEIGHT - psize
+            mstate = 'ready'
+            eylist[i] = 0
+            exlist[i] = random.randint(50, WIDTH - esize)
+            allscore += 1
+            ey_change_list[i] += 1
+
+            esound.play()
+
+        enemy(exlist[i], eylist[i])
+
+        # ชนพื้น
+        if eylist[i] == HEIGHT:
+            eylist[i] = 0
+            exlist[i] = random.randint(50, WIDTH - esize)
 
     """
     FIRE MASK
@@ -151,11 +216,9 @@ while running:
         mstate = 'ready'
         ey = 0
         ex = random.randint(50, WIDTH - esize)
+        allscore += 1
         # สุ่มตำแหน่ง ความกว้างหน้าจอ - ขนาด virus
-
-
-
-
+    showscore()
     pygame.display.update()
     screen.fill((0, 0, 0))
     clock.tick(FPS)
