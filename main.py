@@ -225,6 +225,10 @@ while running:
                 hx = WIDTH - hsize
                 pygame.mixer.music.play(-1)
                 read_highestscore()
+                # reset enemy speed
+                for j in range(0, 3):
+                    ey_change_list[j] = 1
+                # reset enemy
                 for i in range(allenemy):
                     eylist[i] = random.randint(0, 100)
                     exlist[i] = random.randint(50, WIDTH - psize)
