@@ -49,6 +49,8 @@ while running:
     elif px >= 600:
         pxchange = -1
         px += pxchange
+    else:
+        px += pxchange
     px += 1
     pygame.display.update()
     clock.tick(FPS)
