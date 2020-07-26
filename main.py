@@ -14,6 +14,7 @@ pygame.display.set_caption('Uncle cs Covid-19')
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
+background = pygame.image.load('BG.jpg')
 """
 UNCLE
 """
@@ -41,7 +42,7 @@ esize = 64
 eimg = pygame.image.load('virus.png')
 ex = 50
 ey = 0
-eychange = 1
+eychange = 5
 
 
 def enemy(x, y):
@@ -56,7 +57,7 @@ msize = 32
 mimg = pygame.image.load('mask.png')
 mx = 100
 my = HEIGHT - psize
-mychange = 1
+mychange = 20
 mstate = 'ready'
 
 
@@ -90,6 +91,7 @@ clock = pygame.time.Clock()
 FPS = 60
 while running:
 
+    screen.blit(background, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -127,6 +129,10 @@ while running:
     """
     enemy(ex, ey)
     ey += eychange
+    # ชนพื้น
+    if ey == HEIGHT:
+        ey = 0
+        ex = random.randint(50, WIDTH - esize)
 
     """
     FIRE MASK
@@ -144,8 +150,11 @@ while running:
         my = HEIGHT - psize
         mstate = 'ready'
         ey = 0
-        ex = random.randint(0. WIDTH - esize)
+        ex = random.randint(50, WIDTH - esize)
         # สุ่มตำแหน่ง ความกว้างหน้าจอ - ขนาด virus
+
+
+
 
     pygame.display.update()
     screen.fill((0, 0, 0))
