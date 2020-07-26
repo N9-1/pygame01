@@ -331,7 +331,6 @@ while running:
         heart(hx, hy)
         heart(hx2, hy2)
         heart(hx3, hy3)
-        numscore = allscore
         # ชนพื้น
         '''
         if eylist[i] == HEIGHT:
