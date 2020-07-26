@@ -1,4 +1,5 @@
 import pygame
+import math
 
 pygame.init()
 
@@ -22,7 +23,8 @@ psize = 128
 pimg = pygame.image.load('uncle.png')
 px = 100  # start X
 py = HEIGHT - psize  # start Y
-pxchange = 1
+pxchange = 0
+
 
 def player(x, y):
     screen.blit(pimg, (x, y))
@@ -31,10 +33,51 @@ def player(x, y):
 """
 ENEMY
 """
+# 2 - enemy - virus.png
+
+esize = 64
+
+eimg = pygame.image.load('virus.png')
+ex = 50
+ey = 0
+eychange = 1
+
+
+def enemy(x, y):
+    screen.blit(eimg, (x, y))
+
 
 """
 MASK
 """
+# 3 - mask - mask.png
+msize = 32
+mimg = pygame.image.load('mask.png')
+mx = 100
+my = HEIGHT - psize
+mychange = 1
+mstate = 'ready'
+
+
+def fire_mask(x, y):
+    global mstate
+    mstate = 'fire'
+    screen.blit(mimg, (x, y))
+
+
+"""
+COLLISION
+"""
+
+
+def is_conllision(ecx, ecy, mcx, mcy):\
+    #เช็คการชน
+    distance = math.sqrt(math.pow(ecx - mcx, 2)+math.pow(ecy - mcy, 2))
+    print(distance)
+    if distance < 48:
+        return True
+    else:
+        return  False
 
 """
 GAME LOOP
@@ -44,19 +87,58 @@ running = True
 clock = pygame.time.Clock()
 FPS = 60
 while running:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    # จุดเริ่มต้น
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                pxchange = -10
+            if event.key == pygame.K_RIGHT:
+                pxchange = 10
+
+            if event.key == pygame.K_SPACE:
+                if mstate == 'ready':
+                    mx = px + 100 # ขยับไปทีมือ
+                    fire_mask(mx, my)
+
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                pxchange = 0
+    """
+    RUN PLAYER 
+    """
     player(px, py)
+
     if px <= 0:
-        pxchange = 1
+        px = 0
         px += pxchange
     elif px >= WIDTH - psize:
-        pxchange = -1
+        px = WIDTH - psize
         px += pxchange
     else:
         px += pxchange
-    px += 1
+
+    """
+    RUN ENEMY
+    """
+    enemy(ex, ey)
+    ey += eychange
+
+    """
+    FIRE MASK
+    """
+    if mstate == 'fire':
+        fire_mask(mx, my)
+        my = my - mychange
+
+    if my <= 0:
+        my = HEIGHT - psize
+        mstate = 'ready'
+
     pygame.display.update()
+    screen.fill((0,0,0))
     clock.tick(FPS)
+
